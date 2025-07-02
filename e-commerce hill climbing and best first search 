@@ -1,0 +1,152 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyM6UadYSbMZc/jMX4Sdi6Jr",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/nikkusingh21/Ganik/blob/main/e-commerce%20hill%20climbing%20and%20best%20first%20search%20\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 1,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "rJfJ_b9CZveu",
+        "outputId": "b2ee7a73-7ad7-4490-fac7-9f7d9b7669a0"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Answer yes or no:\n",
+            "Fever? yes\n",
+            "Cough? yes\n",
+            "Headache? no\n",
+            "Runny nose? no\n",
+            "Loss of taste/smell? no\n",
+            "Possible diagnosis: COVID-19\n"
+          ]
+        }
+      ],
+      "source": [
+        "def diagnose():\n",
+        "    print(\"Answer yes or no:\")\n",
+        "    fever = input(\"Fever? \").lower()\n",
+        "    cough = input(\"Cough? \").lower()\n",
+        "    headache = input(\"Headache? \").lower()\n",
+        "    runny_nose = input(\"Runny nose? \").lower()\n",
+        "    loss_taste_smell = input(\"Loss of taste/smell? \").lower()\n",
+        "\n",
+        "    scores = {\"Flu\":0, \"Cold\":0, \"COVID-19\":0, \"Allergies\":0, \"Migraine\":0}\n",
+        "\n",
+        "    if fever == \"yes\":\n",
+        "        scores[\"Flu\"] += 2; scores[\"COVID-19\"] += 2\n",
+        "    if cough == \"yes\":\n",
+        "        scores[\"Flu\"] += 1; scores[\"Cold\"] += 1; scores[\"COVID-19\"] += 2\n",
+        "    if headache == \"yes\":\n",
+        "        scores[\"Migraine\"] += 3; scores[\"Flu\"] += 1\n",
+        "    if runny_nose == \"yes\":\n",
+        "        scores[\"Cold\"] += 2; scores[\"Allergies\"] += 3\n",
+        "    if loss_taste_smell == \"yes\":\n",
+        "        scores[\"COVID-19\"] += 3\n",
+        "\n",
+        "    diagnosis = max(scores, key=scores.get)\n",
+        "    print(f\"Possible diagnosis: {diagnosis}\")\n",
+        "\n",
+        "if __name__ == \"__main__\":\n",
+        "    diagnose()\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import random\n",
+        "\n",
+        "# Sample products with demand, holding cost, stockout cost, and profit\n",
+        "products = [\n",
+        "    {'demand': 20, 'holding': 1, 'stockout': 5, 'profit': 10},\n",
+        "    {'demand': 10, 'holding': 2, 'stockout': 6, 'profit': 8},\n",
+        "]\n",
+        "\n",
+        "def evaluate(state):\n",
+        "    total = 0\n",
+        "    for i, inv in enumerate(state):\n",
+        "        p = products[i]\n",
+        "        sold = min(inv, p['demand'])\n",
+        "        revenue = sold * p['profit']\n",
+        "        holding_cost = inv * p['holding']\n",
+        "        stockout_cost = max(p['demand'] - inv, 0) * p['stockout']\n",
+        "        total += revenue - holding_cost - stockout_cost\n",
+        "    return total\n",
+        "\n",
+        "def neighbors(state):\n",
+        "    nbrs = []\n",
+        "    for i in range(len(state)):\n",
+        "        for change in [-1, 1]:\n",
+        "            new_state = state[:]\n",
+        "            if new_state[i] + change >= 0:\n",
+        "                new_state[i] += change\n",
+        "                nbrs.append(new_state)\n",
+        "    return nbrs\n",
+        "\n",
+        "def hill_climbing():\n",
+        "    current = [random.randint(0, p['demand']*2) for p in products]\n",
+        "    current_score = evaluate(current)\n",
+        "    while True:\n",
+        "        nbrs = neighbors(current)\n",
+        "        next_state = max(nbrs, key=evaluate, default=current)\n",
+        "        next_score = evaluate(next_state)\n",
+        "        if next_score <= current_score:\n",
+        "            break\n",
+        "        current, current_score = next_state, next_score\n",
+        "    return current, current_score\n",
+        "\n",
+        "if __name__ == \"__main__\":\n",
+        "    best_state, best_score = hill_climbing()\n",
+        "    print(\"Optimized inventory:\", best_state)\n",
+        "    print(\"Expected profit:\", best_score)\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "7sbwW-2xkBn4",
+        "outputId": "924a6b13-7b04-40f2-f7c7-d808ce439c84"
+      },
+      "execution_count": 4,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Optimized inventory: [20, 10]\n",
+            "Expected profit: 240\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
