@@ -1,0 +1,84 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyOYGsVJ3Kh2tmQSSjHz0BvP",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/nikkusingh21/Ganik/blob/main/medical%20diagnosis\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 1,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "rJfJ_b9CZveu",
+        "outputId": "b2ee7a73-7ad7-4490-fac7-9f7d9b7669a0"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Answer yes or no:\n",
+            "Fever? yes\n",
+            "Cough? yes\n",
+            "Headache? no\n",
+            "Runny nose? no\n",
+            "Loss of taste/smell? no\n",
+            "Possible diagnosis: COVID-19\n"
+          ]
+        }
+      ],
+      "source": [
+        "def diagnose():\n",
+        "    print(\"Answer yes or no:\")\n",
+        "    fever = input(\"Fever? \").lower()\n",
+        "    cough = input(\"Cough? \").lower()\n",
+        "    headache = input(\"Headache? \").lower()\n",
+        "    runny_nose = input(\"Runny nose? \").lower()\n",
+        "    loss_taste_smell = input(\"Loss of taste/smell? \").lower()\n",
+        "\n",
+        "    scores = {\"Flu\":0, \"Cold\":0, \"COVID-19\":0, \"Allergies\":0, \"Migraine\":0}\n",
+        "\n",
+        "    if fever == \"yes\":\n",
+        "        scores[\"Flu\"] += 2; scores[\"COVID-19\"] += 2\n",
+        "    if cough == \"yes\":\n",
+        "        scores[\"Flu\"] += 1; scores[\"Cold\"] += 1; scores[\"COVID-19\"] += 2\n",
+        "    if headache == \"yes\":\n",
+        "        scores[\"Migraine\"] += 3; scores[\"Flu\"] += 1\n",
+        "    if runny_nose == \"yes\":\n",
+        "        scores[\"Cold\"] += 2; scores[\"Allergies\"] += 3\n",
+        "    if loss_taste_smell == \"yes\":\n",
+        "        scores[\"COVID-19\"] += 3\n",
+        "\n",
+        "    diagnosis = max(scores, key=scores.get)\n",
+        "    print(f\"Possible diagnosis: {diagnosis}\")\n",
+        "\n",
+        "if __name__ == \"__main__\":\n",
+        "    diagnose()\n"
+      ]
+    }
+  ]
+}
